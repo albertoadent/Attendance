@@ -1,0 +1,16 @@
+{
+  "name": "attendance-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run --prefix api build",
+    "start": "npm start --prefix api",
+    "sequelize": "npm run --prefix api sequelize",
+    "sequelize-cli": "npm run --prefix api sequelize-cli",
+    "install": "npm --prefix api install api"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

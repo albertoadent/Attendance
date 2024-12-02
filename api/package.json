@@ -7,7 +7,13 @@
     "start": "per-env",
     "start:development": "nodemon ./bin/www",
     "start:production": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
+    "dev": "nodemon ./bin/www",
+    "sequelize": "sequelize",
+    "sequelize-cli": "sequelize-cli",
+    "build": "node psql-setup-script.js",
+    "db:setup": "npx dotenv sequelize db:migrate && npx dotenv sequelize db:seed:all",
+    "db:migrate": "npx dotenv sequelize db:migrate",
+    "db:seed": "npx dotenv sequelize db:seed:all"
   },
   "author": "",
   "license": "ISC",
