@@ -24,7 +24,6 @@ module.exports = {
           allowNull: true,
           references: {
             model: "ClassTimes",
-            key: "id",
           },
         },
         userId: {
@@ -32,7 +31,6 @@ module.exports = {
           allowNull: true,
           references: {
             model: "Users",
-            key: "id",
           },
         },
         schoolId: {
@@ -40,7 +38,6 @@ module.exports = {
           allowNull: false,
           references: {
             model: "Schools",
-            key: "id",
           },
         },
         date: {

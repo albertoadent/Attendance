@@ -61,7 +61,6 @@ module.exports = {
           type: Sequelize.INTEGER,
           references: {
             model: "Classes",
-            key: "id",
           },
         },
         createdAt: {
