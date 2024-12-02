@@ -1,0 +1,81 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --primary: rgb(201, 201, 201);
+  --secondary: black;
+  --background: #242424;
+  --secondary-background: rgb(21, 37, 0);
+  --foreground: rgb(187, 187, 173);
+  --secondary-foreground: darkblue;
+  --accent: lightblue;
+  --card: rgb(10, 83, 10);
+
+  color-scheme: light dark;
+  color: var(--primary);
+  background-color: var(--background);
+}
+
+.card {
+  background-color: var(--card);
+  color: var(--secondary);
+
+  border: 2px solid var(--accent);
+  border-radius: 2em;
+}
+
+button {
+  border: 2px solid var(--foreground);
+  color: var(--accent);
+  padding: 0.2em;
+  min-width: 5em;
+  width: min-content;
+  border-radius: 0.5em;
+  transition: all 200ms ease-in-out;
+}
+button:hover {
+  color: var(--primary);
+  background-color: var(--secondary-background);
+}
+
+button:disabled {
+  color: var(--background);
+  background-color: var(--secondary);
+}
+
+input {
+  background: var(--secondary);
+  border: 2px solid var(--foreground);
+  border-radius: 0.2em;
+  color: var(--foreground);
+  padding: 0.2em;
+  font-size: 1em;
+  transition: all 200ms ease-in-out;
+}
+input:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+input:focus {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+input:disabled {
+  background-color: var(--background);
+  border-color: var(--secondary)
+}
+input:disabled:hover {
+  color: var(--primary)
+}
+
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
