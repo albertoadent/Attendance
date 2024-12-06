@@ -1,4 +1,4 @@
-import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { Outlet, useNavigate} from "react-router-dom";
 import Navigation from "./Navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";

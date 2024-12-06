@@ -15,7 +15,7 @@ export default function LogOut() {
   useEffect(() => {
     document.addEventListener("logout", handleLogout);
     return () => document.removeEventListener("logout", handleLogout);
-  }, [dispatch]);
+  }, [dispatch,handleLogout]);
 
   async function logOut() {
     await dispatch(logout());

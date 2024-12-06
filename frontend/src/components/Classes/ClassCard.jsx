@@ -12,7 +12,7 @@ export default function ClassCard({ cls, isOwner }) {
 
   useEffect(() => {
     dispatch(getClass(cls.id));
-  }, [dispatch]);
+  }, [dispatch,cls.id]);
 
   async function onDrop(e) {
     const data = JSON.parse(e.dataTransfer.getData("text/plain"));

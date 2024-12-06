@@ -3,7 +3,6 @@ import { leaveSchool } from "../../redux/schools";
 import { useNavigate } from "react-router-dom";
 import { useModal } from "../../context/Modal";
 import DeleteConfirmation from "../Confirmations/DeleteConfirmation";
-import { FaDoorOpen } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 
 export default function LeaveSchoolButton({ schoolId }) {

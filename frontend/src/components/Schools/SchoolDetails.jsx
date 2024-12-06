@@ -19,7 +19,7 @@ export default function SchoolDetails() {
       return;
     }
     dispatch(getSchool(id));
-  }, [dispatch, schoolId]);
+  }, [dispatch, schoolId,id]);
 
   const school = useSelector((state) => state.schools[id]);
   const user = useSelector((state) => state.session.user);

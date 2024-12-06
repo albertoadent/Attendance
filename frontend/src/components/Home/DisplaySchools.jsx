@@ -27,7 +27,7 @@ export default function DisplaySchools() {
       document.removeEventListener("login", refreshListener);
       document.removeEventListener("logout", removeListener);
     };
-  }, [dispatch, refreshListener, removeListener]);
+  }, [dispatch, refreshListener, removeListener,refreshSchools]);
 
   function getSchoolsArray() {
     return schoolsObj ? Object.values(schoolsObj) : [];
@@ -45,7 +45,7 @@ export default function DisplaySchools() {
     if (oneSchool) {
       navigate("/schools/" + oneSchool.id);
     }
-  }, [schoolsObj,haveOneSchool]);
+  }, [schoolsObj,haveOneSchool,navigate]);
 
   return (
     <div className="w-full bg-secondary border p-2">

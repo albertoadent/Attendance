@@ -41,7 +41,7 @@ export default function Sidebar() {
     addDocumentEventListener();
 
     return cleanupDocumentListener;
-  }, [open]);
+  }, [open, addDocumentEventListener, cleanupDocumentListener]);
 
   return (
     <div
@@ -60,7 +60,9 @@ export default function Sidebar() {
                 {user.firstName} {user.lastName}
                 <h1 className="text-xs overflow-hidden">{user.email}</h1>
               </h1>
-              <h1 className="text-sm text-accent overflow-hidden">{user.username}</h1>
+              <h1 className="text-sm text-accent overflow-hidden">
+                {user.username}
+              </h1>
             </div>
           )}
 
@@ -82,7 +84,7 @@ export default function Sidebar() {
 
           {user &&
             Object.values(schools).map((school) => (
-              <SchoolCard school={school} nav={true} />
+              <SchoolCard key={school.id} school={school} nav={true} />
             ))}
 
           {!user && <LoginButton />}
