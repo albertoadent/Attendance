@@ -113,7 +113,7 @@ router.get(
   [getSchool, schoolExists, getRole, onlySchoolUsers],
   async (req, res, next) => {
     const { schoolId } = req.school.toJSON();
-    const role = req.roles.find(({ id }) => id == schoolId)?.role;
+    const role = req.role
     const options = role == "OWNER" ? {} : { where: { isActive: true } };
     const classes = await req.school.getClasses(options);
     return res.json(classes.map((c) => c.toJSON()));

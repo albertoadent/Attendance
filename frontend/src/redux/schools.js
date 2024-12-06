@@ -123,6 +123,7 @@ export const getClasses = (id) => async (dispatch) => {
   try {
     const classes = await get(`/api/schools/${id}/classes`);
     dispatch(loadClasses(id, classes));
+    console.log(classes);
     classes.forEach((cls) => {
       dispatch(getClass(cls.id));
     });
