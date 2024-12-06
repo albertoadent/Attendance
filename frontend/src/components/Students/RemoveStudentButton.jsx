@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { del } from "../../redux/csrf";
-import { getStudents } from "../../redux/schools";
+import { getClasses, getStudents } from "../../redux/schools";
 import { useModal } from "../../context/Modal";
 import DeleteConfirmation from "../Confirmations/DeleteConfirmation";
 import { FaTrash } from "react-icons/fa";
@@ -12,6 +12,7 @@ export default function RemoveStudentButton({ student }) {
       const { schoolId, userId } = student;
       await del(`/api/schools/${schoolId}/join/${userId}`);
       await dispatch(getStudents(schoolId));
+      await dispatch(getClasses(schoolId));
     } catch (error) {
       const { message } = await error.json();
       alert(message);
