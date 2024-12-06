@@ -53,7 +53,7 @@ export default function SchoolDetails() {
               <h1 className="text-lg text-center bg-secondary w-min self-center p-1 rounded">
                 Classes
               </h1>
-              <ul className="border rounded bg-class overflow-scroll max-h-[40em]">
+              <ul className="border rounded overflow-scroll max-h-[40em]">
                 {school.classes &&
                   school.classes.map((cls) => (
                     <ClassCard key={cls.id} cls={cls} isOwner={isOwner} />

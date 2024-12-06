@@ -12,7 +12,7 @@ export default function ClassCard({ cls, isOwner }) {
 
   useEffect(() => {
     dispatch(getClass(cls.id));
-  }, [dispatch,cls.id]);
+  }, [dispatch, cls.id]);
 
   async function onDrop(e) {
     const data = JSON.parse(e.dataTransfer.getData("text/plain"));
@@ -41,6 +41,11 @@ export default function ClassCard({ cls, isOwner }) {
     return <h1>Loading...</h1>;
   }
 
+  const regular =
+    "p-2 border-2 h-32 text-center text-lg flex flex-col items-center justify-center";
+  const dropping = " text-green-500 border-green-500";
+  const inactive = " bg-gray-500";
+  const active = " bg-class";
   return (
     <li
       onDrop={onDrop}
@@ -48,9 +53,9 @@ export default function ClassCard({ cls, isOwner }) {
       onDragLeave={onDragLeave}
       key={cls.id}
       className={
-        prepareDrop
-          ? "p-2 border-2 border-green-500 h-32 text-center text-green-500 text-lg flex flex-col items-center justify-center"
-          : "p-2 border border-primary h-32 text-center text-lg flex flex-col items-center justify-center"
+        regular +
+        (prepareDrop ? dropping : "") +
+        (cls.isActive ? active : inactive)
       }
     >
       <div className="flex items-center justify-center gap-2">
