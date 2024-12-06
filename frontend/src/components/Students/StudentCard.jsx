@@ -6,7 +6,7 @@ import { getClasses, getStudents, getTeachers } from "../../redux/schools";
 import RemoveStudentButton from "./RemoveStudentButton";
 import { FaBars } from "react-icons/fa";
 
-export default function StudentCard({ student, isOwner }) {
+export default function StudentCard({ student, isOwner, disable }) {
   const dispatch = useDispatch();
   async function handleSubmit() {
     try {
@@ -30,14 +30,14 @@ export default function StudentCard({ student, isOwner }) {
   }
   return (
     <li
-      draggable
+      draggable={!disable}
       onDragStart={(e) => {
         const data = JSON.stringify(student);
         e.dataTransfer.setData("text/plain", data);
       }}
       className="p-2 border flex gap-2 justify-between bg-student items-center"
     >
-      {isOwner && <FaBars className="self-center" />}
+      {isOwner && !disable && <FaBars className="self-center" />}
       <h1 className="text-secondary overflow-hidden">
         {`${student?.User?.firstName || "Loading..."} ${
           student?.User?.lastName || ""

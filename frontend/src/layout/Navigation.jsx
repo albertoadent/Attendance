@@ -10,7 +10,7 @@ export default function Navigation() {
   const navigate = useNavigate();
 
   return (
-    <div className="h-50 p-3 border flex justify-between bg-secondary">
+    <div className="h-50 p-3 border-b-2 flex justify-between bg-secondary w-full">
       <h1 className="w-64 text-lg cursor-pointer" onClick={() => navigate("/")}>
         Attendance Tracker
       </h1>

@@ -247,18 +247,21 @@ const schoolReducer = (state = initialState, action) => {
     }
     case UPDATE_CLASS: {
       const { cls, schoolId, classId } = action;
-      const classes = state[schoolId].classes;
+      const classes = state[schoolId]?.classes || [];
       const exists = classes.find(({ id }) => id == classId);
       if (!exists) {
         return {
           ...state,
-          [schoolId]: { ...state[schoolId], classes: [...classes, cls] },
+          [schoolId]: {
+            ...(state[schoolId] || {}),
+            classes: [...classes, cls],
+          },
         };
       }
       return {
         ...state,
         [schoolId]: {
-          ...state[schoolId],
+          ...(state[schoolId] || {}),
           classes: classes.map((c) => {
             if (c.id == classId) {
               return cls;

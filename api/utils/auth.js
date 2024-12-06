@@ -40,7 +40,7 @@ function sendSafeUser(req, res) {
 async function signIn(req, res, next) {
   console.log("SIGNING IN");
   const { credential, password } = req.body;
-  const user = await User.findOne({
+  const user = await User.unscoped().findOne({
     where: {
       [Sequelize.Op.or]: [{ username: credential }, { email: credential }],
     },

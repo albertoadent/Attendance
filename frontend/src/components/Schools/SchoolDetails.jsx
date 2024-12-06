@@ -14,12 +14,23 @@ export default function SchoolDetails() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const sortClass = (
+    { name: nameA, level: levelA, isActive: activeA },
+    { name: nameB, level: levelB, isActive: activeB }
+  ) =>
+    activeB - activeA || `${nameA}${levelA}`.localeCompare(`${nameB}${levelB}`);
+
+  const sortSchoolUser = (
+    { User: { firstName: firstA, lastName: lastA } },
+    { User: { firstName: firstB, lastName: lastB } }
+  ) => `${firstA}${lastA}`.localeCompare(`${firstB}${lastB}`);
+
   useEffect(() => {
     if (!id) {
       return;
     }
     dispatch(getSchool(id));
-  }, [dispatch, schoolId,id]);
+  }, [dispatch, schoolId, id]);
 
   const school = useSelector((state) => state.schools[id]);
   const user = useSelector((state) => state.session.user);
@@ -55,9 +66,11 @@ export default function SchoolDetails() {
               </h1>
               <ul className="border rounded overflow-scroll max-h-[40em]">
                 {school.classes &&
-                  school.classes.map((cls) => (
-                    <ClassCard key={cls.id} cls={cls} isOwner={isOwner} />
-                  ))}
+                  school.classes
+                    .sort(sortClass)
+                    .map((cls) => (
+                      <ClassCard key={cls.id} cls={cls} isOwner={isOwner} />
+                    ))}
               </ul>
             </div>
           )}
@@ -68,13 +81,15 @@ export default function SchoolDetails() {
               </h1>
               <ul className="border rounded overflow-scroll max-h-[40em]">
                 {school.teachers &&
-                  school.teachers.map((teacher) => (
-                    <TeacherCard
-                      key={teacher.id}
-                      teacher={teacher}
-                      isOwner={isOwner}
-                    />
-                  ))}
+                  school.teachers
+                    .sort(sortSchoolUser)
+                    .map((teacher) => (
+                      <TeacherCard
+                        key={teacher.id}
+                        teacher={teacher}
+                        isOwner={isOwner}
+                      />
+                    ))}
               </ul>
             </div>
           )}
@@ -85,13 +100,15 @@ export default function SchoolDetails() {
               </h1>
               <ul className="border rounded overflow-scroll max-h-[40em]">
                 {school.students &&
-                  school.students.map((student) => (
-                    <StudentCard
-                      key={student.id}
-                      student={student}
-                      isOwner={isOwner}
-                    />
-                  ))}
+                  school.students
+                    .sort(sortSchoolUser)
+                    .map((student) => (
+                      <StudentCard
+                        key={student.id}
+                        student={student}
+                        isOwner={isOwner}
+                      />
+                    ))}
               </ul>
             </div>
           )}

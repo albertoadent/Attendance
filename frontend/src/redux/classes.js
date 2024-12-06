@@ -33,8 +33,8 @@ const addClassUser = (classUser) => {
   };
 };
 
-function updateSchoolsStore(dispatch, cls) {
-  dispatch(updateClass(cls.schoolId, cls.id, cls));
+async function updateSchoolsStore(dispatch, cls) {
+  return dispatch(updateClass(cls.schoolId, cls.id, cls));
 }
 
 export const getClasses = () => async (dispatch) => {
@@ -56,7 +56,7 @@ export const getClass = (id) => async (dispatch) => {
 export const editClass = (classData) => async (dispatch) => {
   const cls = await put("/api/classes/" + classData.id, classData);
   dispatch(setClass(cls));
-  updateSchoolsStore(dispatch, cls);
+  await updateSchoolsStore(dispatch, cls);
   return cls;
 };
 

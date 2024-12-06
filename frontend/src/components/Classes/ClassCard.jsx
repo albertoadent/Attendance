@@ -3,10 +3,12 @@ import DeleteClassButton from "./DeleteClassButton";
 import ActivateClassButton from "./ActivateClassButton";
 import { useDispatch, useSelector } from "react-redux";
 import { addUserToClass, getClass } from "../../redux/classes";
+import { useNavigate } from "react-router-dom";
 
 export default function ClassCard({ cls, isOwner }) {
   const [prepareDrop, setPrepareDrop] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const classDetails = useSelector((state) => state.classes[cls.id]);
 
@@ -59,9 +61,12 @@ export default function ClassCard({ cls, isOwner }) {
       }
     >
       <div className="flex items-center justify-center gap-2">
-        <h1>{`${cls.name || "Loading..."} ${
+        <button
+          className="text-lg w-full p-1"
+          onClick={() => navigate(`/schools/${cls.schoolId}/classes/${cls.id}`)}
+        >{`${cls.name || "Loading..."} ${
           cls.level ? "- " + cls.level : ""
-        }`}</h1>
+        }`}</button>
         {isOwner && (
           <p className="text-xs">{cls.isActive ? "(ACTIVE)" : "(INACTIVE)"}</p>
         )}

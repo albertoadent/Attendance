@@ -18,14 +18,12 @@ const removeUser = () => {
 
 export const restoreUser = () => async (dispatch) => {
   const data = await get("/api/session");
-  console.log(data);
   dispatch(setUser(data.user));
   return data;
 };
 
 export const signup = (user) => async (dispatch) => {
   const data = await post("/api/signup", user);
-  console.log(data);
   dispatch(setUser(data.user));
   return data;
 };

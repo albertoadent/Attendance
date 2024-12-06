@@ -46,11 +46,7 @@ router.get("/", async (req, res, next) => {
     .filter(({ role }) => "OWNER" === role)
     .map(({ id }) => id);
 
-  const classUsers = await req.user.getClassUsers({
-    where: {
-      isActive: true,
-    },
-  }); //Classes I attend or teach
+  const classUsers = await req.user.getClassUsers(); //Classes I attend or teach
   const classIds = Object.keys(
     classUsers.reduce(
       (classIdObj, classUser) => ({
@@ -102,7 +98,6 @@ router.get("/:classId", [getClass, classExists], async (req, res, next) => {
     };
     return data;
   });
-
 
   const [students, teachers] = clsUsers.reduce(
     (arr, curr) => {
@@ -176,6 +171,26 @@ router.delete(
   async (req, res, next) => {
     const data = await req.class.destroy();
     return res.json({ message: "Successfully Deleted Data" });
+  }
+);
+
+router.delete(
+  "/:classId/join/:userId",
+  [getClass, classExists, onlyRoles("OWNER", "TEACHER")],
+  async (req, res, next) => {
+    const { userId, classId } = req.params;
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: "That user does not exist" });
+    }
+    const [classUser] = await user.getClassUsers({ where: { classId } });
+    if (!classUser) {
+      return res
+        .status(404)
+        .json({ message: "That user does not attend that class" });
+    }
+    await classUser.destroy();
+    return res.json({ message: "User successfully removed from class" });
   }
 );
 

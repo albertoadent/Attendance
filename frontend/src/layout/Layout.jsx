@@ -1,9 +1,10 @@
-import { Outlet, useNavigate} from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Navigation from "./Navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { restoreUser } from "../redux/session";
 import Sidebar from "./Sidebar";
+import Footer from "./Footer";
 
 export default function Layout() {
   const dispatch = useDispatch();
@@ -12,7 +13,9 @@ export default function Layout() {
 
   useEffect(() => {
     if (!user) {
-      navigate("/");
+      dispatch(restoreUser()).then((data) => {
+        if (!data.user) navigate("/");
+      });
     }
   }, [user]);
 
@@ -21,10 +24,11 @@ export default function Layout() {
   }, [dispatch]);
 
   return (
-    <div>
+    <div className="min-h-[100vh] h-full flex flex-col w-full">
       <Navigation />
       <Sidebar />
       <Outlet />
+      {/* <Footer /> */}
     </div>
   );
 }

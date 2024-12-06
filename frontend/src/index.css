@@ -25,6 +25,24 @@
   background-color: var(--background);
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.root {
+  flex-grow: 1;
+}
+
+footer {
+  background-color: var(--secondary);
+  color: var(--accent);
+  text-align: center;
+  padding: 1em;
+  border-top: 2px solid var(--primary);
+}
+
 .card {
   background-color: var(--card);
   color: var(--secondary);

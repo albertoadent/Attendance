@@ -4,6 +4,7 @@ import Home from "./components/Home/Home.jsx";
 import SchoolDetails from "./components/Schools/SchoolDetails.jsx";
 import CreateSchool from "./components/Schools/CreateSchool.jsx";
 import EditSchool from "./components/Schools/EditSchool.jsx";
+import ClassDetails from "./components/Classes/ClassDetails.jsx";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
           {
             path: "edit",
             element: <EditSchool />,
+          },
+          {
+            path: "classes/:classId",
+            element: <ClassDetails />,
           },
         ],
       },
