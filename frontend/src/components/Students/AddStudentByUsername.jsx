@@ -10,6 +10,7 @@ export default function AddStudentByUsername({ schoolId }) {
     try {
       await dispatch(addToSchool(schoolId, username));
       setError(null);
+      setUsername(null)
     } catch (error) {
       const { message } = await error.json();
       setError(message);

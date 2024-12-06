@@ -1,4 +1,10 @@
-const { School, User, Sequelize, SchoolUser } = require("../../db/models");
+const {
+  School,
+  User,
+  Sequelize,
+  SchoolUser,
+  ClassUser,
+} = require("../../db/models");
 const { currentSchoolRole } = require("../../utils/permissions");
 const { FORBIDDEN, requireAuth } = require("../../utils/auth");
 
@@ -55,14 +61,21 @@ router.get(
 
     const role = req.role;
     if (["OWNER", "TEACHER"].includes(role)) {
-      const students = await req.school.getStudents();
+      const students = await req.school.getStudents({
+        include: [{ model: User }],
+      });
       data.students = students.map((s) => s.toJSON());
     }
 
     if (["OWNER", "TEACHER", "STUDENT"].includes(role)) {
-      const teachers = await req.school.getTeachers();
+      const teachers = await req.school.getTeachers({
+        include: [{ model: User }],
+      });
       data.teachers = teachers.map((t) => t.toJSON());
     }
+    const options = role == "OWNER" ? {} : { where: { isActive: true } };
+    const classes = await req.school.getClasses(options);
+    data.classes = classes.map((c) => c.toJSON());
 
     return res.json(data);
   }
@@ -91,7 +104,6 @@ router.get(
     const teachers = await req.school.getTeachers({
       include: [{ model: User }],
     });
-    console.log(teachers.map((t) => t.toJSON()));
     return res.json(teachers.map((t) => t.toJSON()));
   }
 );
@@ -102,7 +114,7 @@ router.get(
   async (req, res, next) => {
     const { schoolId } = req.school.toJSON();
     const role = req.roles.find(({ id }) => id == schoolId)?.role;
-    const options = role == "OWNER" ? {} : { where: { isActive: false } };
+    const options = role == "OWNER" ? {} : { where: { isActive: true } };
     const classes = await req.school.getClasses(options);
     return res.json(classes.map((c) => c.toJSON()));
   }
@@ -121,6 +133,50 @@ router.post("/", async (req, res, next) => {
   });
   return res.json(newModel.toJSON());
 });
+
+router.post(
+  "/:schoolId/classes/:classId/users",
+  [getSchool, schoolExists, getRole, onlySchoolUsers],
+  async (req, res, next) => {
+    const { school, role } = req;
+    const { classId } = req.params;
+    const { userId } = req.body;
+    if (!["OWNER", "TEACHER"].includes(role)) {
+      return FORBIDDEN(res);
+    }
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User Not Found" });
+    }
+    const [schoolHasUser] = await school.getSchoolUsers({
+      where: {
+        userId,
+      },
+    });
+    if (!schoolHasUser) {
+      return res
+        .status(400)
+        .json({ message: "Student Does Not Attend School" });
+    }
+    const [newClassUser, created] = await ClassUser.findOrCreate({
+      where: {
+        userId,
+        classId,
+      },
+    });
+    if (!created) {
+      return res
+        .status(400)
+        .json({ message: "That User already is in that class" });
+    }
+    const data = {
+      ...newClassUser.toJSON(),
+      User: user.toJSON(),
+      role: schoolHasUser.toJSON().role,
+    };
+    return res.json(data);
+  }
+);
 
 /* PUT ROUTES */
 

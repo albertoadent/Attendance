@@ -3,6 +3,8 @@ import { leaveSchool } from "../../redux/schools";
 import { useNavigate } from "react-router-dom";
 import { useModal } from "../../context/Modal";
 import DeleteConfirmation from "../Confirmations/DeleteConfirmation";
+import { FaDoorOpen } from "react-icons/fa";
+import { FiLogOut } from "react-icons/fi";
 
 export default function LeaveSchoolButton({ schoolId }) {
   const dispatch = useDispatch();
@@ -32,9 +34,9 @@ export default function LeaveSchoolButton({ schoolId }) {
     <button
       disabled={!schoolId}
       onClick={handleClick}
-      className="hover:text-red-500 hover:bg-secondary border-red-500"
+      className="hover:text-red-500 hover:bg-secondary border-red-500 h-12 min-w-12 p-1"
     >
-      Unenroll
+      <FiLogOut className="h-full w-full" />
     </button>
   );
 }

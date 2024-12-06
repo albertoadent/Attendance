@@ -1,11 +1,20 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 import Navigation from "./Navigation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { restoreUser } from "../redux/session";
+import Sidebar from "./Sidebar";
 
 export default function Layout() {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.session.user);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/");
+    }
+  }, [user]);
 
   useEffect(() => {
     dispatch(restoreUser());
@@ -14,6 +23,7 @@ export default function Layout() {
   return (
     <div>
       <Navigation />
+      <Sidebar />
       <Outlet />
     </div>
   );

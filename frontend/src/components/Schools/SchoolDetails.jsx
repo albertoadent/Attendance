@@ -2,17 +2,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import LeaveSchoolButton from "./LeaveSchoolButton";
 import { useEffect } from "react";
-import {
-  getClasses,
-  getSchool,
-  getStudents,
-  getTeachers,
-} from "../../redux/schools";
+import { getSchool } from "../../redux/schools";
 import StudentCard from "../Students/StudentCard";
-import AddStudentByUsername from "../Students/AddStudentByUsername";
-import CreateSchoolButton from "./CreateSchoolButton";
 import TeacherCard from "../Teachers/TeacherCard";
-import CreateClass from "../Classes/CreateClass";
+import OwnerSidebar from "../../layout/OwnerSidebar";
+import ClassCard from "../Classes/ClassCard";
 
 export default function SchoolDetails() {
   const { schoolId } = useParams();
@@ -24,18 +18,13 @@ export default function SchoolDetails() {
     if (!id) {
       return;
     }
-    dispatch(getSchool(id))
-      .then(() => dispatch(getClasses(id)))
-      .then(() => dispatch(getTeachers(id)))
-      .then(() => dispatch(getStudents(id)));
-  }, [dispatch, schoolId, id]);
+    dispatch(getSchool(id));
+  }, [dispatch, schoolId]);
 
   const school = useSelector((state) => state.schools[id]);
   const user = useSelector((state) => state.session.user);
 
-  function editSchool() {
-    navigate("edit");
-  }
+  const isOwner = school?.ownerId == user?.id;
 
   if (!schoolId) {
     return <h1>Loading...</h1>;
@@ -43,70 +32,70 @@ export default function SchoolDetails() {
   if (!school) {
     return <h1>Loading...</h1>;
   }
-  const isOwner = school.ownerId == user?.id;
 
   return (
-    <div className="flex flex-col items-center">
-      {isOwner ? (
-        <div>
-          <button onClick={editSchool}>Edit My School</button>
-          <CreateSchoolButton />
+    <div className="flex w-full gap-2">
+      {isOwner && <OwnerSidebar schoolId={id} />}
+      <div className="flex flex-col items-center self-center w-full p-2">
+        <button className="self-start" onClick={() => navigate(-1)}>
+          Back
+        </button>
+        <div className="flex flex-col w-full p-2">
+          <div className="flex gap-2 items-center">
+            {!isOwner && <LeaveSchoolButton schoolId={id} />}
+            <h1 className="text-[3em]">{school.name}</h1>
+          </div>
+          {isOwner && <h2 className="text-lg">Join Code: {school.joinCode}</h2>}
         </div>
-      ) : (
-        <LeaveSchoolButton schoolId={id} />
-      )}
-      <h1>{school.name}</h1>
-      <h2>Join Code: {school.joinCode}</h2>
-      {isOwner && (
-        <div className="flex">
-          <AddStudentByUsername schoolId={id} />
-          <CreateClass schoolId={id} />
+        <div className="flex gap-2 border border-accent bg-secondaryForeground p-2 w-full justify-evenly">
+          {school.classes && !!school.classes.length && (
+            <div className="min-w-64 flex flex-col">
+              <h1 className="text-lg text-center bg-secondary w-min self-center p-1 rounded">
+                Classes
+              </h1>
+              <ul className="border rounded bg-class overflow-scroll max-h-[40em]">
+                {school.classes &&
+                  school.classes.map((cls) => (
+                    <ClassCard key={cls.id} cls={cls} isOwner={isOwner} />
+                  ))}
+              </ul>
+            </div>
+          )}
+          {school.teachers && !!school.teachers.length && (
+            <div className="min-w-64 flex flex-col">
+              <h1 className="text-lg text-center bg-secondary w-min self-center p-1 rounded">
+                Teachers
+              </h1>
+              <ul className="border rounded overflow-scroll max-h-[40em]">
+                {school.teachers &&
+                  school.teachers.map((teacher) => (
+                    <TeacherCard
+                      key={teacher.id}
+                      teacher={teacher}
+                      isOwner={isOwner}
+                    />
+                  ))}
+              </ul>
+            </div>
+          )}
+          {school.students && !!school.students.length && (
+            <div className="min-w-64 flex flex-col">
+              <h1 className="text-lg text-center bg-secondary w-min self-center p-1 rounded">
+                Students
+              </h1>
+              <ul className="border rounded overflow-scroll max-h-[40em]">
+                {school.students &&
+                  school.students.map((student) => (
+                    <StudentCard
+                      key={student.id}
+                      student={student}
+                      isOwner={isOwner}
+                    />
+                  ))}
+              </ul>
+            </div>
+          )}
         </div>
-      )}
-      <div className="flex gap-2">
-        {school.classes && !!school.classes.length && (
-          <div className="min-w-64">
-            <h1>Classes:</h1>
-            <ul className="border rounded">
-              {school.classes &&
-                school.classes.map((cls) => (
-                  <li key={cls.id} className="p-2 border">{`${
-                    cls.name || "Loading..."
-                  } ${cls.level ? "- " + cls.level : ""}`}</li>
-                ))}
-            </ul>
-          </div>
-        )}
-        {school.teachers && !!school.teachers.length && (
-          <div className="min-w-64">
-            <h1>Teachers:</h1>
-            <ul className="border rounded">
-              {school.teachers &&
-                school.teachers.map((teacher) => (
-                  <TeacherCard
-                    key={teacher.id}
-                    teacher={teacher}
-                    isOwner={isOwner}
-                  />
-                ))}
-            </ul>
-          </div>
-        )}
-        {school.students && !!school.students.length && (
-          <div className="min-w-64">
-            <h1>Students:</h1>
-            <ul className="border rounded">
-              {school.students &&
-                school.students.map((student) => (
-                  <StudentCard
-                    key={student.id}
-                    student={student}
-                    isOwner={isOwner}
-                  />
-                ))}
-            </ul>
-          </div>
-        )}
       </div>
     </div>
   );

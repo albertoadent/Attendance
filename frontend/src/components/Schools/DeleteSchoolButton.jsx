@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux";
 import { deleteSchool } from "../../redux/schools";
 import DeleteButton from "../Confirmations/DeleteButton";
 import { useNavigate } from "react-router-dom";
+import { FaTrash } from "react-icons/fa";
 
 export default function DeleteSchoolButton({ id }) {
   const dispatch = useDispatch();
@@ -20,7 +21,7 @@ export default function DeleteSchoolButton({ id }) {
       onDelete={onDelete}
       confirmationMessage="Are you sure you want to delete your school?"
     >
-      Delete My School
+      <FaTrash className="h-full w-full" />
     </DeleteButton>
   );
 }

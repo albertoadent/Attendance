@@ -13,9 +13,12 @@
   --background: #242424;
   --secondary-background: rgb(21, 37, 0);
   --foreground: rgb(187, 187, 173);
-  --secondary-foreground: darkblue;
+  --secondary-foreground: rgba(37, 37, 48, 0.712);
   --accent: lightblue;
   --card: rgb(10, 83, 10);
+  --student: rgba(116, 236, 240, 0.39);
+  --teacher: rgba(106, 224, 91, 0.295);
+  --class: rgba(196, 128, 82, 0.747);
 
   color-scheme: light dark;
   color: var(--primary);
@@ -68,13 +71,11 @@ input:focus {
 }
 input:disabled {
   background-color: var(--background);
-  border-color: var(--secondary)
+  border-color: var(--secondary);
 }
 input:disabled:hover {
-  color: var(--primary)
+  color: var(--primary);
 }
-
-
 
 @tailwind base;
 @tailwind components;

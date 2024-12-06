@@ -31,6 +31,8 @@ function sendSafeUser(req, res) {
     username: userData.username,
     email: userData.email,
     phoneNumber: userData.phoneNumber,
+    firstName: userData.firstName,
+    lastName: userData.lastName,
   };
   return res.json({ user: safeUser });
 }

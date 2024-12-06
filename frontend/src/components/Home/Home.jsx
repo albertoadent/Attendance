@@ -13,14 +13,13 @@ export default function Home() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getSchools()).then((schools) => {
-      console.log(schools);
       setHaveSchools(!!schools.length);
     });
   }, [dispatch, user]);
 
   if (!user) {
     return (
-      <div className="text-center flex justify-center p-10 flex-col items-center gap-2">
+      <div className="text-center flex justify-center p-10 flex-col items-center gap-2 self-center w-full">
         {/* <Demo /> */}
         <h1 className="text-[3em] p-5">Attendance Tracker</h1>
         <Login />

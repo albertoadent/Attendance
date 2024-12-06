@@ -12,6 +12,8 @@ export default function CreateClass({ schoolId }) {
   async function createClass() {
     try {
       await dispatch(addClassToSchool({ name, schoolId, level }));
+      setName(null);
+      setLevel(null);
     } catch (e) {
       const { message } = await e.json();
       setError(message);

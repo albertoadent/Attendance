@@ -3,6 +3,7 @@ import { del } from "../../redux/csrf";
 import { getTeachers } from "../../redux/schools";
 import { useModal } from "../../context/Modal";
 import DeleteConfirmation from "../Confirmations/DeleteConfirmation";
+import { FaTrash } from "react-icons/fa";
 
 export default function RemoveTeacherButton({ teacher }) {
   const dispatch = useDispatch();
@@ -26,8 +27,8 @@ export default function RemoveTeacherButton({ teacher }) {
     );
   }
   return (
-    <button className="min-w-6 text-center" onClick={onClick}>
-      R
+    <button className="min-w-6 text-center bg-red-500 p-1" onClick={onClick}>
+      <FaTrash className="h-full w-full" />
     </button>
   );
 }

@@ -85,8 +85,12 @@ export default function EditSchool() {
   }
 
   return (
-    <div className="bg-background border border-primary rounded flex flex-col items-center">
-      <DeleteSchoolButton id={school.id} />
+    <div className="bg-background border border-primary rounded flex flex-col items-center gap-2 self-center w-full">
+      <div className="w-full flex justify-center p-2 gap-1">
+        <button onClick={() => navigate(-1)}>Back</button>
+        <DeleteSchoolButton id={school.id} />
+        <button onClick={() => navigate(`/schools/${school.id}`)}>Visit</button>
+      </div>
       <h3>Name:</h3>
       <input type="text" value={name} onChange={handleNameChange} />
       <h3>Join Code:</h3>

@@ -2,8 +2,9 @@ import { useModal } from "../../context/Modal";
 import { put } from "../../redux/csrf";
 import UpdateConfirmation from "../Confirmations/UpdateConfirmation";
 import { useDispatch } from "react-redux";
-import { getStudents, getTeachers } from "../../redux/schools";
+import { getClasses, getStudents, getTeachers } from "../../redux/schools";
 import RemoveTeacherButton from "./RemoveTeacherButton";
+import { FaBars } from "react-icons/fa";
 
 export default function TeacherCard({ teacher, isOwner }) {
   const dispatch = useDispatch();
@@ -12,6 +13,7 @@ export default function TeacherCard({ teacher, isOwner }) {
       await put(`/api/teachers/${teacher.id}`);
       await dispatch(getTeachers(teacher.schoolId));
       await dispatch(getStudents(teacher.schoolId));
+      await dispatch(getClasses(teacher.schoolId));
     } catch (error) {
       const { message } = await error.json();
       alert(message);
@@ -27,15 +29,26 @@ export default function TeacherCard({ teacher, isOwner }) {
     );
   }
   return (
-    <li className="p-2 border flex gap-2 justify-between">
-      <h1>
+    <li
+      draggable
+      onDragStart={(e) => {
+        const data = JSON.stringify(teacher);
+        e.dataTransfer.setData("text/plain", data);
+      }}
+      className="p-2 border flex gap-2 justify-between bg-teacher items-center"
+    >
+      {isOwner && <FaBars className="self-center" />}
+      <h1 className="text-secondary">
         {`${teacher?.User?.firstName || "Loading..."} ${
           teacher?.User?.lastName || ""
         }`}
       </h1>
-      <div>
+      <div className="w-1/4 h-full flex justify-end gap-1">
         {isOwner && (
-          <button className="min-w-6 text-center" onClick={onClick}>
+          <button
+            className="min-w-6 text-center bg-student text-secondary"
+            onClick={onClick}
+          >
             S
           </button>
         )}

@@ -1,3 +1,4 @@
+import { getClass, setClass } from "./classes.js";
 import { del, get, post, put } from "./csrf.js";
 
 const SET_SCHOOL = "schools/setSchool";
@@ -9,6 +10,7 @@ const LOAD_TEACHERS = "schools/loadTeachers";
 const ADD_TEACHER = "schools/addTeacher";
 const LOAD_CLASSES = "schools/loadClasses";
 const ADD_CLASS = "schools/addClass";
+const UPDATE_CLASS = "schools/updateClass";
 
 const setSchool = (school) => {
   return {
@@ -73,6 +75,15 @@ export const clearSchools = () => {
   };
 };
 
+export const updateClass = (schoolId, classId, cls) => {
+  return {
+    type: UPDATE_CLASS,
+    schoolId,
+    classId,
+    cls,
+  };
+};
+
 export const getSchools = () => async (dispatch) => {
   const data = await get("/api/schools");
   data.forEach((school) => dispatch(setSchool(school)));
@@ -82,6 +93,9 @@ export const getSchools = () => async (dispatch) => {
 export const getSchool = (id) => async (dispatch) => {
   const school = await get("/api/schools/" + id);
   dispatch(setSchool(school));
+  school.classes.forEach((cls) => {
+    dispatch(setClass(cls));
+  });
   return school;
 };
 
@@ -109,6 +123,9 @@ export const getClasses = (id) => async (dispatch) => {
   try {
     const classes = await get(`/api/schools/${id}/classes`);
     dispatch(loadClasses(id, classes));
+    classes.forEach((cls) => {
+      dispatch(getClass(cls.id));
+    });
     return classes;
   } catch (error) {
     dispatch(loadClasses(id, []));
@@ -154,6 +171,7 @@ export const addTeacherToSchool = (schoolId, username) => async (dispatch) => {
 export const addClassToSchool = (classData) => async (dispatch) => {
   const response = await post("/api/classes", classData);
   dispatch(addClass(classData.schoolId, response));
+  dispatch(setClass(response));
   return response;
 };
 
@@ -168,7 +186,10 @@ const initialState = {};
 const schoolReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_SCHOOL: {
-      return { ...state, [action.school.id]: action.school };
+      return {
+        ...state,
+        [action.school.id]: { ...state[action.school.id], ...action.school },
+      };
     }
     case REMOVE_SCHOOL: {
       const { [action.id]: _, ...rest } = state;
@@ -220,6 +241,29 @@ const schoolReducer = (state = initialState, action) => {
         [action.id]: {
           ...state[action.id],
           classes: [...(state[action.id].classes || []), action.class],
+        },
+      };
+    }
+    case UPDATE_CLASS: {
+      const { cls, schoolId, classId } = action;
+      const classes = state[schoolId].classes;
+      const exists = classes.find(({ id }) => id == classId);
+      if (!exists) {
+        return {
+          ...state,
+          [schoolId]: { ...state[schoolId], classes: [...classes, cls] },
+        };
+      }
+      return {
+        ...state,
+        [schoolId]: {
+          ...state[schoolId],
+          classes: classes.map((c) => {
+            if (c.id == classId) {
+              return cls;
+            }
+            return c;
+          }),
         },
       };
     }

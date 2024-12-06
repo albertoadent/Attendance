@@ -1,4 +1,10 @@
-const { Class, Sequelize } = require("../../db/models");
+const {
+  Class,
+  Sequelize,
+  User,
+  SchoolUser,
+  ClassUser,
+} = require("../../db/models");
 const { FORBIDDEN } = require("../../utils/auth");
 
 const router = require("express").Router();
@@ -67,7 +73,7 @@ router.get("/", async (req, res, next) => {
   return res.json(classes.map((c) => c.toJSON()));
 });
 
-router.get("/:classId", [getClass, classExists], (req, res, next) => {
+router.get("/:classId", [getClass, classExists], async (req, res, next) => {
   const cls = req.class.toJSON();
   const { schoolId } = cls;
   const canSeeClass = req.roles
@@ -78,7 +84,45 @@ router.get("/:classId", [getClass, classExists], (req, res, next) => {
     return FORBIDDEN(res);
   }
 
-  return res.json(cls);
+  const classUsers = await req.class.getClassUsers({
+    include: [
+      {
+        model: User,
+        include: [{ model: SchoolUser, attributes: ["role", "schoolId"] }],
+      },
+    ],
+  });
+
+  const clsUsers = classUsers.map((clsUsr) => {
+    const data = {
+      ...clsUsr.toJSON(),
+      role: clsUsr
+        .toJSON()
+        .User.SchoolUsers.find((su) => su.schoolId == schoolId).role,
+    };
+    return data;
+  });
+
+
+  const [students, teachers] = clsUsers.reduce(
+    (arr, curr) => {
+      if (curr.role == "STUDENT") {
+        arr[0].push(curr);
+        return arr;
+      }
+      arr[1].push(curr);
+      return arr;
+    },
+    [[], []]
+  );
+
+  const data = {
+    ...cls,
+    students,
+    teachers,
+  };
+
+  return res.json(data);
 });
 
 /* POST ROUTES */
@@ -117,16 +161,22 @@ router.put(
 
 /* DELETE ROUTES */
 
-router.delete("/:classId",[getClass, classExists, onlyRoles("OWNER")],
-async (req, res, next) => {
-  const data = await req.class.update({ isActive: false });
-  return res.json(data.toJSON());
-});
+router.delete(
+  "/:classId",
+  [getClass, classExists, onlyRoles("OWNER")],
+  async (req, res, next) => {
+    const data = await req.class.update({ isActive: false });
+    return res.json(data.toJSON());
+  }
+);
 
-router.delete("/:classId/data",[getClass, classExists, onlyRoles("OWNER")],
-async (req, res, next) => {
-  const data = await req.class.destroy();
-  return res.json({message:"Successfully Deleted Data"});
-});
+router.delete(
+  "/:classId/data",
+  [getClass, classExists, onlyRoles("OWNER")],
+  async (req, res, next) => {
+    const data = await req.class.destroy();
+    return res.json({ message: "Successfully Deleted Data" });
+  }
+);
 
 module.exports = router;

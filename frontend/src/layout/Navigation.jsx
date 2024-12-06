@@ -1,14 +1,12 @@
 import { useSelector } from "react-redux";
 import LogOut from "../components/LogIn/LogOut";
-import { useModal } from "../context/Modal";
 import { useNavigate } from "react-router-dom";
-import Demo from "../components/LogIn/Demo";
 import SignUpButton from "../components/LogIn/SignUpButton";
 import JoinSchool from "../components/Schools/JoinSchool";
+import DemoButton from "../components/LogIn/DemoButton";
 
 export default function Navigation() {
   const user = useSelector((state) => state.session.user);
-  const { setModalContent } = useModal();
   const navigate = useNavigate();
 
   return (
@@ -21,9 +19,7 @@ export default function Navigation() {
       </div>
       <div className="flex w-64 justify-center">
         {user && <LogOut />}
-        {!user && (
-          <button onClick={() => setModalContent(<Demo />)}>Demo</button>
-        )}
+        {!user && <DemoButton />}
         {!!user && <JoinSchool nav={true} />}
       </div>
     </div>
