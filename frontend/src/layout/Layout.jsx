@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { restoreUser } from "../redux/session";
 import Sidebar from "./Sidebar";
-import Footer from "./Footer";
 
 export default function Layout() {
   const dispatch = useDispatch();
@@ -28,7 +27,6 @@ export default function Layout() {
       <Navigation />
       <Sidebar />
       <Outlet />
-      {/* <Footer /> */}
     </div>
   );
 }
