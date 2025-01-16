@@ -11,14 +11,13 @@ const tableName = "ClassTimes";
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.addColumn(
-      "ClassTimes",
+      { ...options, tableName },
       "endTime",
       Sequelize.DataTypes.TIME,
       {
         allowNull: true,
         defaultValue: null,
-      },
-      options
+      }
     );
   },
 
