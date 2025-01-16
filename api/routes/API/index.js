@@ -1,4 +1,4 @@
-const allRoutes = ["schools", "students", "teachers","classes"];
+const allRoutes = ["schools", "students", "teachers", "classes", "classTimes"];
 
 const router = require("express").Router();
 const {

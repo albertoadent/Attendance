@@ -1,13 +1,14 @@
 import { useModal } from "../../context/Modal";
 import { put } from "../../redux/csrf";
 import UpdateConfirmation from "../Confirmations/UpdateConfirmation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getClasses, getStudents, getTeachers } from "../../redux/schools";
 import RemoveTeacherButton from "./RemoveTeacherButton";
 import { FaBars } from "react-icons/fa";
 
 export default function TeacherCard({ teacher, isOwner, disable }) {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state?.session?.user);
   async function handleSubmit() {
     try {
       await put(`/api/teachers/${teacher.id}`);
@@ -30,7 +31,7 @@ export default function TeacherCard({ teacher, isOwner, disable }) {
   }
   return (
     <li
-      draggable={!disable}
+      draggable={!disable && isOwner}
       onDragStart={(e) => {
         const data = JSON.stringify(teacher);
         e.dataTransfer.setData("text/plain", data);
@@ -38,8 +39,12 @@ export default function TeacherCard({ teacher, isOwner, disable }) {
       className="p-2 border flex gap-2 justify-between bg-teacher items-center"
     >
       {isOwner && !disable && <FaBars className="self-center" />}
-      <h1 className="text-secondary">
-        {`${teacher?.User?.firstName || "Loading..."} ${
+      <h1
+        className={`${
+          teacher.User.id == user.id ? "text-green-500" : "text-secondary"
+        } text-center`}
+      >
+        {teacher.User.id == user.id ?"You":`${teacher?.User?.firstName || "Loading..."} ${
           teacher?.User?.lastName || ""
         }`}
       </h1>

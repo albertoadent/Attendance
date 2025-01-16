@@ -4,6 +4,7 @@ const {
   User,
   SchoolUser,
   ClassUser,
+  ClassTime,
 } = require("../../db/models");
 const { FORBIDDEN } = require("../../utils/auth");
 
@@ -13,7 +14,9 @@ const router = require("express").Router();
 
 async function getClass(req, res, next) {
   const { classId } = req.params;
-  req.class = await Class.findByPk(classId);
+  req.class = await Class.findByPk(classId, {
+    include: [{ model: ClassTime }],
+  });
   return next();
 }
 
@@ -25,9 +28,9 @@ function classExists(req, res, next) {
 }
 
 function hasAccess(req, roles = ["OWNER"]) {
-  return !!req.roles.find(
-    ({ id, role }) => roles.includes(role) && id == req.class.toJSON().schoolId
-  );
+  req.role =
+    req.roles.find(({ id }) => id == req.class.toJSON().schoolId)?.role ?? null;
+  return roles.includes(req.role);
 }
 
 function onlyRoles(...roles) {
@@ -142,6 +145,47 @@ router.post(
     return res.json(data.toJSON());
   }
 );
+router.post(
+  "/:classId/times",
+  [getClass, classExists, onlyRoles("OWNER")],
+  async (req, res, next) => {
+    const checkDays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"].filter(
+      (day) => req.body[day]
+    );
+    if (!checkDays[0]) {
+      return res.status(400).json({
+        message:
+          "The class time must at least be available one day of the week",
+      });
+    }
+    const { time, endTime } = req.body;
+
+    const where = {
+      [Sequelize.Op.or]: checkDays.reduce((array, day) => {
+        array.push({ [day]: true });
+        return array;
+      }, []),
+      endTime: { [Sequelize.Op.gte]: time },
+      time: { [Sequelize.Op.lte]: endTime },
+      classId: req.class.id,
+    };
+    console.log(where);
+
+    const [overlap] = await ClassTime.findAll({ where });
+
+    if (overlap) {
+      return res.status(400).json({
+        message: "The class time overlaps with another class time",
+      });
+    }
+
+    const data = await ClassTime.create({
+      ...req.body,
+      classId: req.params.classId,
+    });
+    return res.json(data.toJSON());
+  }
+);
 
 /* PUT ROUTES */
 
@@ -151,6 +195,17 @@ router.put(
   async (req, res, next) => {
     const updatedModel = await req.class.update(req.body);
     return res.json(updatedModel.toJSON());
+  }
+);
+
+router.put(
+  "/:classId/times/:classTimeId",
+  [getClass, classExists, onlyRoles("OWNER")],
+  async (req, res, next) => {
+    const { classTimeId } = req.params;
+    const data = await ClassTime.findByPk(classTimeId);
+    const updated = await data.update(req.body);
+    return res.json(updated.toJSON());
   }
 );
 
@@ -191,6 +246,17 @@ router.delete(
     }
     await classUser.destroy();
     return res.json({ message: "User successfully removed from class" });
+  }
+);
+
+router.delete(
+  "/:classId/times/:classTimeId",
+  [getClass, classExists, onlyRoles("OWNER")],
+  async (req, res, next) => {
+    const { classTimeId } = req.params;
+    const data = await ClassTime.findByPk(classTimeId);
+    await data.destroy();
+    return res.json({ message: "successfully deleted" });
   }
 );
 

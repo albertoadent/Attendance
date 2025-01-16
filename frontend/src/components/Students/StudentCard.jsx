@@ -1,13 +1,14 @@
 import { useModal } from "../../context/Modal";
 import { put } from "../../redux/csrf";
 import UpdateConfirmation from "../Confirmations/UpdateConfirmation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getClasses, getStudents, getTeachers } from "../../redux/schools";
 import RemoveStudentButton from "./RemoveStudentButton";
 import { FaBars } from "react-icons/fa";
 
-export default function StudentCard({ student, isOwner, disable }) {
+export default function StudentCard({ student, isOwner, isTeacher, disable }) {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state?.session?.user);
   async function handleSubmit() {
     try {
       await put(`/api/students/${student.id}`);
@@ -30,15 +31,19 @@ export default function StudentCard({ student, isOwner, disable }) {
   }
   return (
     <li
-      draggable={!disable}
+      draggable={!disable && (isOwner || isTeacher)}
       onDragStart={(e) => {
         const data = JSON.stringify(student);
         e.dataTransfer.setData("text/plain", data);
       }}
       className="p-2 border flex gap-2 justify-between bg-student items-center"
     >
-      {isOwner && !disable && <FaBars className="self-center" />}
-      <h1 className="text-secondary overflow-hidden">
+      {(isOwner || isTeacher) && !disable && <FaBars className="self-center" />}
+      <h1
+        className={`${
+          user.id == student.User.id ? "text-green-500" : "text-secondary"
+        } overflow-hidden`}
+      >
         {`${student?.User?.firstName || "Loading..."} ${
           student?.User?.lastName || ""
         }`}

@@ -60,16 +60,18 @@ export const editClass = (classData) => async (dispatch) => {
   return cls;
 };
 
-export const deleteClass = (id, data = false) => async (dispatch) => {
-  if (data) {
-    const response = await del("/api/classes/" + id + "/data");
-    dispatch(removeClass(id));
+export const deleteClass =
+  (id, data = false) =>
+  async (dispatch) => {
+    if (data) {
+      const response = await del("/api/classes/" + id + "/data");
+      dispatch(removeClass(id));
+      return response;
+    }
+    const response = await del("/api/classes/" + id);
+    dispatch(setClass(response));
     return response;
-  }
-  const response = await del("/api/classes/" + id);
-  dispatch(setClass(response));
-  return response;
-};
+  };
 
 export const activateClass = (id) => async (dispatch) => {
   const cls = await post(`/api/classes/${id}/activate`);
@@ -87,6 +89,16 @@ export const addUserToClass =
     dispatch(addClassUser(classUser));
     return classUser;
   };
+
+export const addClassTime = (classId, classTimeData) => async (dispatch) => {
+  await post(`/api/classes/${classId}/times`, classTimeData);
+  return dispatch(getClass(classId));
+};
+export const deleteClassTime = (classTimeId) => async (dispatch) => {
+  const { classId } = await get(`/api/classTimes/${classTimeId}`);
+  await del(`/api/classTimes/${classTimeId}`);
+  return dispatch(getClass(classId));
+};
 
 const initialState = {};
 

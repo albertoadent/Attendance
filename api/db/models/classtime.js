@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       sat: { type: DataTypes.BOOLEAN },
       sun: { type: DataTypes.BOOLEAN },
       time: DataTypes.TIME,
+      endTime: DataTypes.TIME,
       classId: {
         type: DataTypes.INTEGER,
         references: {

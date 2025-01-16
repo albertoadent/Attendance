@@ -36,6 +36,9 @@ export default function SchoolDetails() {
   const user = useSelector((state) => state.session.user);
 
   const isOwner = school?.ownerId == user?.id;
+  const isTeacher = !!school?.teachers?.find(
+    ({ userId }) => userId == user?.id
+  );
 
   if (!schoolId) {
     return <h1>Loading...</h1>;
@@ -107,6 +110,7 @@ export default function SchoolDetails() {
                         key={student.id}
                         student={student}
                         isOwner={isOwner}
+                        isTeacher={isTeacher}
                       />
                     ))}
               </ul>
