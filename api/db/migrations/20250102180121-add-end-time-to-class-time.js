@@ -23,6 +23,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeColumn(tableName, "endTime", options);
+    await queryInterface.removeColumn({ ...options, tableName }, "endTime");
   },
 };
